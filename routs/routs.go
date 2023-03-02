@@ -24,7 +24,7 @@ func (r *Routs) Init() {
 	r.Engine.GET("/add_language", r.Handlers.AddLanguage)
 	r.Engine.GET("/add_sys_message", r.Handlers.AddSysMessage)
 	r.Engine.GET("/add_currency", r.Handlers.AddCurrency)
-	r.Engine.GET("/add_test", r.Handlers.AddTest)
+	r.Engine.GET("/add_transfer", r.Handlers.AddTransfer)
 	r.Engine.GET("/add_agents", r.Handlers.AddAgent)
 	r.Engine.GET("/add_acc_agents", r.Handlers.AddAccount)
 
@@ -32,7 +32,7 @@ func (r *Routs) Init() {
 	r.Engine.GET("/get_language", r.Handlers.GetLanguage)
 	r.Engine.GET("/get_sys_message", r.Handlers.GetSysMessage)
 	r.Engine.GET("/get_currency", r.Handlers.GetCurrency)
-	r.Engine.GET("/get_test", r.Handlers.GetTest)
+	r.Engine.GET("/get_transfer", r.Handlers.GetTransfer)
 	r.Engine.GET("/get_agents", r.Handlers.GetAgent)
 	r.Engine.GET("/get_acc_agents", r.Handlers.GetAccountAgent)
 
@@ -40,8 +40,8 @@ func (r *Routs) Init() {
 	r.Engine.GET("/update_language", r.Handlers.UpdateLanguage)
 	r.Engine.GET("/update_sys_message", r.Handlers.UpdateSysMessage)
 	r.Engine.GET("/update_currency", r.Handlers.UpdateCurrency)
-	r.Engine.GET("/update_test", r.Handlers.UpdateTest)
-	//r.Engine.GET("/update_agent:", r.Handlers.UpdateAgents)
+	r.Engine.GET("/update_transfer", r.Handlers.UpdateTransfer)
+	r.Engine.GET("/update_agent", r.Handlers.UpdateAgents)
 	r.Engine.GET("/update_account", r.Handlers.UpdateAccountAgent)
 	r.Engine.GET("/update_account_def", r.Handlers.UpdateAccountDefault)
 

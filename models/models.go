@@ -30,7 +30,7 @@ type Currency struct {
 	Icon string `gorm:"column:icon"`
 }
 
-type Test struct {
+type Transfers struct {
 	ID       int64  `gorm:"column:id;primary_key;autoIncrement"`
 	Entity   string `gorm:"column:entity"`
 	EntityId int64  `gorm:"column:entity_id"`

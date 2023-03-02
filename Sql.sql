@@ -30,7 +30,7 @@ create table currencies(
     primary key (id)
 );
 
-create table test(
+create table transfers(
     id    bigserial primary key ,
     entity text,
     entity_id int,
