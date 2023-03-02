@@ -20,7 +20,7 @@ func (r *Repository) GetLanguages(offset int, limit int) ([]*models.Languages, e
 	if limit == 0 {
 		limit = 10
 	}
-	tx := db.Data.Table("language").Limit(limit).Offset(offset).Find(&language)
+	tx := db.Data.Table("languages").Limit(limit).Offset(offset).Find(&language)
 
 	if tx.Error != nil {
 		log.Println(tx.Error)
