@@ -57,15 +57,16 @@ func (h Handler) UpdateSysMessage(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 			log.Println(err)
 			return
-		} else {
-			err := h.Repository.UpdateSysMessage(message)
-			if err != nil {
-				ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
-				log.Println(err)
-				return
-			}
+		}
+	} else {
+		err := h.Repository.UpdateSysMessage(message)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+			log.Println(err)
+			return
 		}
 	}
+
 	ctx.JSON(http.StatusOK, " Done!")
 }
 

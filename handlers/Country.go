@@ -69,15 +69,17 @@ func (h Handler) UpdateCountries(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 			log.Println(err)
 			return
-		} else {
-			err := h.Repository.UpdateCountries(countries)
-			if err != nil {
-				ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
-				log.Println(err)
-				return
-			}
+		}
+	} else {
+		err := h.Repository.UpdateCountries(countries)
+		log.Println("work&")
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+			log.Println(err)
+			return
 		}
 	}
+
 	ctx.JSON(http.StatusOK, " Done!")
 }
 
