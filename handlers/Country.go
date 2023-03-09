@@ -45,14 +45,23 @@ func (h *Handler) GetCountry(ctx *gin.Context) {
 	limit, _ := strconv.Atoi(limitStr)
 	//log.Println(limit, page)
 	offset := (page - 1) * 10
-	app, len, err := h.Repository.GetCountries(offset, limit)
+	app, err := h.Repository.GetCountries(offset, limit)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	log.Println(len)
-	ctx.JSON(http.StatusOK, app)
+	totalPage, err := h.Repository.TotalPageCountry(int64(limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	var Country models.CountriesWithPage
+	Country.Countries = app
+	Country.TotalPage = totalPage
+	log.Println(totalPage, "handler")
+	ctx.JSON(http.StatusOK, Country)
 }
 
 func (h Handler) UpdateCountries(ctx *gin.Context) {

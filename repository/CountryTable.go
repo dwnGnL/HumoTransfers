@@ -16,9 +16,9 @@ func (r Repository) AddCountry(country *models.Countries) error {
 	return nil
 }
 
-func (r *Repository) GetCountries(offset int, limit int) ([]*models.Countries, int64, error) {
+func (r *Repository) GetCountries(offset int, limit int) ([]*models.Countries, error) {
 	var countries []*models.Countries
-	var length int64
+
 	if limit == 0 {
 		limit = 10
 	}
@@ -27,13 +27,13 @@ func (r *Repository) GetCountries(offset int, limit int) ([]*models.Countries, i
 	//if filter!="" {
 	//	query = query.Where("name like ?","%"+filter+"%")
 	//}
-	tx := query.Count(&length)
-	tx = query.Limit(limit).Offset(offset).Find(&countries)
+
+	tx := query.Limit(limit).Offset(offset).Find(&countries)
 	if tx.Error != nil {
 		log.Println(tx.Error)
-		return nil, 0, tx.Error
+		return nil, tx.Error
 	}
-	return countries, length, nil
+	return countries, nil
 }
 
 func (r Repository) UpdateCountries(country *models.Countries) error {
@@ -81,4 +81,24 @@ func (r Repository) CountryStatus(country *models.Countries) error {
 		return tx.Error
 	}
 	return nil
+}
+
+func (r Repository) TotalPageCountry(limit int64) (int64, error) {
+	var length int64
+	if limit == 0 {
+		limit = 10
+	}
+
+	query := db.Data.Table("countries").Count(&length)
+	if query.Error != nil {
+		log.Println(query.Error, "error in TotalPageCountry")
+		return 0, query.Error
+	}
+
+	totalPage := length / limit
+	if length%limit != 0 {
+		totalPage++
+	}
+	log.Println(totalPage, "test")
+	return totalPage, nil
 }

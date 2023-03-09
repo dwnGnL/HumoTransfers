@@ -40,8 +40,17 @@ func (h *Handler) GetAccountAgent(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
+	totalPage, err := h.Repository.TotalPageAgents(int64(limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	var Account models.AccountWithPage
+	Account.Account = app
+	Account.TotalPage = totalPage
 
-	ctx.JSON(http.StatusOK, app)
+	ctx.JSON(http.StatusOK, Account)
 }
 
 func (h Handler) UpdateAccountAgent(ctx *gin.Context) {

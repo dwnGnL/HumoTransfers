@@ -41,7 +41,17 @@ func (h *Handler) GetTransfer(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	ctx.JSON(http.StatusOK, app)
+	totalPage, err := h.Repository.TotalPageTransfer(int64(limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	var Transfers models.TransfersWithPage
+	Transfers.Transfers = app
+	Transfers.TotalPage = totalPage
+
+	ctx.JSON(http.StatusOK, Transfers)
 }
 
 func (h Handler) UpdateTransfer(ctx *gin.Context) {

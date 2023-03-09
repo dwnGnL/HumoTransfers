@@ -60,3 +60,20 @@ func (r Repository) DeleteCurrency(currency *models.Currency) error {
 	}
 	return nil
 }
+
+func (r Repository) TotalPageCurrency(limit int64) (int64, error) {
+	var length int64
+	if limit == 0 {
+		limit = 10
+	}
+	query := db.Data.Table("currencies").Count(&length)
+	if query.Error != nil {
+		log.Println(query.Error)
+		return 0, query.Error
+	}
+	totalPage := length / limit
+	if length%limit != 0 {
+		totalPage++
+	}
+	return totalPage, nil
+}

@@ -39,8 +39,17 @@ func (h *Handler) GetCurrency(ctx *gin.Context) {
 		log.Println(err)
 		return
 	}
+	totalPage, err := h.Repository.TotalPageCurrency(int64(limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	var Currency models.CurrencyWithPage
+	Currency.Currency = app
+	Currency.TotalPage = totalPage
 
-	ctx.JSON(http.StatusOK, app)
+	ctx.JSON(http.StatusOK, Currency)
 }
 
 func (h Handler) UpdateCurrency(ctx *gin.Context) {

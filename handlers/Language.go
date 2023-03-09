@@ -47,8 +47,17 @@ func (h *Handler) GetLanguage(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
+	totalPage, err := h.Repository.TotalPageLanguage(int64(limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	var Language models.LanguageWithPage
+	Language.Languages = app
+	Language.TotalPage = totalPage
 
-	ctx.JSON(http.StatusOK, app)
+	ctx.JSON(http.StatusOK, Language)
 }
 
 func (h Handler) UpdateLanguage(ctx *gin.Context) {

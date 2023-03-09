@@ -54,4 +54,38 @@ type AccountAgent struct {
 	Type       string `gorm:"column:type"`
 }
 
+type CountriesWithPage struct {
+	Countries []*Countries
+	TotalPage int64
+}
+
+type LanguageWithPage struct {
+	Languages []*Languages
+	TotalPage int64
+}
+
+type SysMessageWithPage struct {
+	SysMessage []*SysMessage
+	TotalPage  int64
+}
+
+type CurrencyWithPage struct {
+	Currency  []*Currency
+	TotalPage int64
+}
+
+type TransfersWithPage struct {
+	Transfers []*Transfers
+	TotalPage int64
+}
+
+type AgentsWithPage struct {
+	Agents    []*Agents
+	TotalPage int64
+}
+type AccountWithPage struct {
+	Account   []*AccountAgent
+	TotalPage int64
+}
+
 // *bool - null bool

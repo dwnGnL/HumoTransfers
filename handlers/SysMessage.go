@@ -39,8 +39,17 @@ func (h *Handler) GetSysMessage(ctx *gin.Context) {
 		log.Println(err)
 		return
 	}
+	totalPage, err := h.Repository.TotalPageSysMessage(int64(limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	var SysMessage models.SysMessageWithPage
+	SysMessage.SysMessage = app
+	SysMessage.TotalPage = totalPage
 
-	ctx.JSON(http.StatusOK, app)
+	ctx.JSON(http.StatusOK, SysMessage)
 }
 
 func (h Handler) UpdateSysMessage(ctx *gin.Context) {
