@@ -35,6 +35,7 @@ create table transfers(
     entity text,
     entity_id int,
     lang_id int,
+    keyfield int,
     value text,
 
 --     foreign key (entity, entity_id) references countries(name, id),
@@ -62,3 +63,13 @@ create table account_agents
     foreign key (curr_id) references currencies(id)
 );
 
+create table userinfo (
+    id bigserial primary key,
+    name text,
+    icon text,
+    active bool default true,
+    sort int
+)
+
+--
+-- //todo keyfield Transfer

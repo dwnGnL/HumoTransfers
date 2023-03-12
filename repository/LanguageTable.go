@@ -15,18 +15,16 @@ func (r Repository) AddLanguage(language *models.Languages) error {
 	return nil
 }
 
-func (r *Repository) GetLanguages(offset int, limit int) ([]*models.Languages, error) {
-	var language []*models.Languages
-	if limit == 0 {
-		limit = 10
+func (r *Repository) GetLanguages(pagination *models.Pagination) ([]*models.Languages, error) {
+	var Languages []*models.Languages
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuider := db.Data.Table("languages").Limit(pagination.Limit).Offset(offset)
+	result := queryBuider.Model(&models.Languages{}).Find(&Languages)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
 	}
-	tx := db.Data.Table("languages").Limit(limit).Offset(offset).Find(&language)
-
-	if tx.Error != nil {
-		log.Println(tx.Error)
-		return nil, tx.Error
-	}
-	return language, nil
+	return Languages, nil
 }
 
 func (r Repository) UpdateLanguage(language *models.Languages) error {
@@ -87,7 +85,7 @@ func (r Repository) TotalPageLanguage(limit int64) (int64, error) {
 	if limit == 0 {
 		limit = 10
 	}
-	query := db.Data.Table("currencies").Count(&length)
+	query := db.Data.Table("languages").Count(&length)
 	if query.Error != nil {
 		log.Println(query.Error)
 		return 0, query.Error

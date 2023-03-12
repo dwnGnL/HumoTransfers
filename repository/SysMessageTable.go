@@ -15,17 +15,16 @@ func (r Repository) AddSysMessage(message *models.SysMessage) error {
 	return nil
 }
 
-func (r *Repository) GetSysMessage(offset int, limit int) ([]*models.SysMessage, error) {
-	var message []*models.SysMessage
-	if limit == 0 {
-		limit = 10
+func (r *Repository) GetSysMessage(pagination *models.Pagination) ([]*models.SysMessage, error) {
+	var SysMessage []*models.SysMessage
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuider := db.Data.Table("sys_messages").Limit(pagination.Limit).Offset(offset)
+	result := queryBuider.Model(&models.SysMessage{}).Find(&SysMessage)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
 	}
-	tx := db.Data.Table("sys_messages").Limit(limit).Offset(offset).Find(&message)
-	if tx.Error != nil {
-		log.Println(tx.Error)
-		return nil, tx.Error
-	}
-	return message, nil
+	return SysMessage, nil
 }
 
 func (r Repository) UpdateSysMessage(message *models.SysMessage) error {

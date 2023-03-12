@@ -15,17 +15,16 @@ func (r Repository) AddAgent(agents *models.Agents) error {
 	return nil
 }
 
-func (r *Repository) GetAgent(offset int, limit int) ([]*models.Agents, error) {
-	var agents []*models.Agents
-	if limit == 0 {
-		limit = 10
+func (r *Repository) GetAgent(pagination *models.Pagination) ([]*models.Agents, error) {
+	var Agents []*models.Agents
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuider := db.Data.Table("agents").Limit(pagination.Limit).Offset(offset)
+	result := queryBuider.Model(&models.Agents{}).Find(&Agents)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
 	}
-	tx := db.Data.Table("agents").Limit(limit).Offset(offset).Find(&agents)
-	if tx.Error != nil {
-		log.Println(tx.Error)
-		return nil, tx.Error
-	}
-	return agents, nil
+	return Agents, nil
 }
 
 func (r Repository) UpdateAgents(agent *models.Agents) error {

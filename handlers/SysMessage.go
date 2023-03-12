@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 func (h *Handler) AddSysMessage(ctx *gin.Context) {
@@ -27,29 +26,22 @@ func (h *Handler) AddSysMessage(ctx *gin.Context) {
 }
 
 func (h *Handler) GetSysMessage(ctx *gin.Context) {
-	queries := ctx.Request.URL.Query()
-	pageStr := queries.Get("page")
-	limitStr := queries.Get("limit")
-	page, _ := strconv.Atoi(pageStr)
-	limit, _ := strconv.Atoi(limitStr)
-
-	offset := (page - 1) * 10
-	app, err := h.Repository.GetSysMessage(offset, limit)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	totalPage, err := h.Repository.TotalPageSysMessage(int64(limit))
+	pagination := GeneratePaginationFromRequest(ctx)
+	SysMessageLists, err := h.Repository.GetSysMessage(&pagination)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	var SysMessage models.SysMessageWithPage
-	SysMessage.SysMessage = app
-	SysMessage.TotalPage = totalPage
-
-	ctx.JSON(http.StatusOK, SysMessage)
+	TotalPages, err := h.Repository.TotalPageSysMessage(int64(pagination.Limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	pagination.Records = SysMessageLists
+	pagination.TotalPages = TotalPages
+	ctx.JSON(http.StatusOK, pagination)
 }
 
 func (h Handler) UpdateSysMessage(ctx *gin.Context) {

@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 func (h *Handler) AddCurrency(ctx *gin.Context) {
@@ -27,29 +26,22 @@ func (h *Handler) AddCurrency(ctx *gin.Context) {
 }
 
 func (h *Handler) GetCurrency(ctx *gin.Context) {
-	queries := ctx.Request.URL.Query()
-	pageStr := queries.Get("page")
-	limitStr := queries.Get("limit")
-	page, _ := strconv.Atoi(pageStr)
-	limit, _ := strconv.Atoi(limitStr)
-
-	offset := (page - 1) * 10
-	app, err := h.Repository.GetCurrency(offset, limit)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	totalPage, err := h.Repository.TotalPageCurrency(int64(limit))
+	pagination := GeneratePaginationFromRequest(ctx)
+	CurrencyLists, err := h.Repository.GetCurrency(&pagination)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	var Currency models.CurrencyWithPage
-	Currency.Currency = app
-	Currency.TotalPage = totalPage
-
-	ctx.JSON(http.StatusOK, Currency)
+	TotalPages, err := h.Repository.TotalPageCurrency(int64(pagination.Limit))
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	pagination.Records = CurrencyLists
+	pagination.TotalPages = TotalPages
+	ctx.JSON(http.StatusOK, pagination)
 }
 
 func (h Handler) UpdateCurrency(ctx *gin.Context) {

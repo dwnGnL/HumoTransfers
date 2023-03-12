@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 func (h *Handler) AddAccount(ctx *gin.Context) {
@@ -27,30 +26,23 @@ func (h *Handler) AddAccount(ctx *gin.Context) {
 }
 
 func (h *Handler) GetAccountAgent(ctx *gin.Context) {
-	queries := ctx.Request.URL.Query()
-	pageStr := queries.Get("page")
-	limitStr := queries.Get("limit")
-	page, _ := strconv.Atoi(pageStr)
-	limit, _ := strconv.Atoi(limitStr)
+	pagination := GeneratePaginationFromRequest(ctx)
 
-	offset := (page - 1) * 10
-	app, err := h.Repository.GetAccountAgent(offset, limit)
+	AccLists, err := h.Repository.GetAccountAgent(&pagination)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	totalPage, err := h.Repository.TotalPageAgents(int64(limit))
+	TotalPages, err := h.Repository.TotalPageAgents(int64(pagination.Limit))
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	var Account models.AccountWithPage
-	Account.Account = app
-	Account.TotalPage = totalPage
-
-	ctx.JSON(http.StatusOK, Account)
+	pagination.Records = AccLists
+	pagination.TotalPages = TotalPages
+	ctx.JSON(http.StatusOK, pagination)
 }
 
 func (h Handler) UpdateAccountAgent(ctx *gin.Context) {

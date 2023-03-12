@@ -27,6 +27,7 @@ func (r *Routs) Init() {
 	r.Engine.POST("/add_transfer", r.Handlers.AddTransfer)
 	r.Engine.POST("/add_agents", r.Handlers.AddAgent)
 	r.Engine.POST("/add_acc_agents", r.Handlers.AddAccount)
+	r.Engine.POST("/add_user", r.Handlers.AddUserInfo)
 
 	r.Engine.GET("/get_country", r.Handlers.GetCountry)
 	r.Engine.GET("/get_language", r.Handlers.GetLanguage)
@@ -35,6 +36,7 @@ func (r *Routs) Init() {
 	r.Engine.GET("/get_transfer", r.Handlers.GetTransfer)
 	r.Engine.GET("/get_agents", r.Handlers.GetAgent)
 	r.Engine.GET("/get_acc_agents", r.Handlers.GetAccountAgent)
+	r.Engine.GET("/get_user", r.Handlers.GetUserInfo)
 
 	r.Engine.PUT("/update_countries", r.Handlers.UpdateCountries)
 	r.Engine.PUT("/update_language", r.Handlers.UpdateLanguage)
@@ -44,12 +46,14 @@ func (r *Routs) Init() {
 	r.Engine.PUT("/update_agent", r.Handlers.UpdateAgents)
 	r.Engine.PUT("/update_account", r.Handlers.UpdateAccountAgent)
 	r.Engine.PUT("/update_account_def", r.Handlers.UpdateAccountDefault)
+	r.Engine.PUT("/update_user", r.Handlers.UpdateUserInfo)
 
 	r.Engine.PATCH("/status_countries", r.Handlers.CountryStatus)
 	r.Engine.PATCH("/status_language", r.Handlers.LanguageStatus)
 	r.Engine.PATCH("/status_sys_message", r.Handlers.SysMessageStatus)
 	r.Engine.PATCH("/status_agent", r.Handlers.AgentStatus)
 	r.Engine.PATCH("/status_account", r.Handlers.AccountAgentStatus)
+	r.Engine.PATCH("/status_user", r.Handlers.UserInfoStatus)
 }
 
 //http://localhost:8080/add_language

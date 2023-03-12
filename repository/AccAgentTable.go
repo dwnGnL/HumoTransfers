@@ -15,15 +15,14 @@ func (r Repository) AddAccount(account *models.AccountAgent) error {
 	return nil
 }
 
-func (r *Repository) GetAccountAgent(offset int, limit int) ([]*models.AccountAgent, error) {
+func (r *Repository) GetAccountAgent(pagination *models.Pagination) ([]*models.AccountAgent, error) {
 	var AccAgents []*models.AccountAgent
-	if limit == 0 {
-		limit = 10
-	}
-	tx := db.Data.Table("account_agents").Limit(limit).Offset(offset).Find(&AccAgents)
-	if tx.Error != nil {
-		log.Println(tx.Error)
-		return nil, tx.Error
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuider := db.Data.Table("account_agents").Limit(pagination.Limit).Offset(offset)
+	result := queryBuider.Model(&models.AccountAgent{}).Find(&AccAgents)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
 	}
 	return AccAgents, nil
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 func (h *Handler) AddLanguage(ctx *gin.Context) {
@@ -27,37 +26,22 @@ func (h *Handler) AddLanguage(ctx *gin.Context) {
 }
 
 func (h *Handler) GetLanguage(ctx *gin.Context) {
-	queries := ctx.Request.URL.Query()
-	pageStr := queries.Get("page")
-	limitStr := queries.Get("limit")
-
-	if pageStr == "" {
-		pageStr = "0"
-	}
-	if limitStr == "" {
-		limitStr = "0"
-	}
-	page, _ := strconv.Atoi(pageStr)
-	limit, _ := strconv.Atoi(limitStr)
-
-	offset := (page - 1) * 10
-	app, err := h.Repository.GetLanguages(offset, limit)
+	pagination := GeneratePaginationFromRequest(ctx)
+	LanguageLists, err := h.Repository.GetLanguages(&pagination)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	totalPage, err := h.Repository.TotalPageLanguage(int64(limit))
+	TotalPages, err := h.Repository.TotalPageLanguage(int64(pagination.Limit))
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	var Language models.LanguageWithPage
-	Language.Languages = app
-	Language.TotalPage = totalPage
-
-	ctx.JSON(http.StatusOK, Language)
+	pagination.Records = LanguageLists
+	pagination.TotalPages = TotalPages
+	ctx.JSON(http.StatusOK, pagination)
 }
 
 func (h Handler) UpdateLanguage(ctx *gin.Context) {

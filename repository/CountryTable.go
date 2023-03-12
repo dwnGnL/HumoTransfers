@@ -16,22 +16,32 @@ func (r Repository) AddCountry(country *models.Countries) error {
 	return nil
 }
 
-func (r *Repository) GetCountries(offset int, limit int) ([]*models.Countries, error) {
+//func (r *Repository) GetCountries(offset int, limit int) ([]*models.Countries, error) {
+//	var countries []*models.Countries
+//if limit == 0 {
+//	limit = 10
+//}
+//
+//query := db.Data.Table("countries")
+////if filter!="" {
+////	query = query.Where("name like ?","%"+filter+"%")
+////}
+//
+//tx := query.Limit(limit).Offset(offset).Find(&countries)
+//if tx.Error != nil {
+//	log.Println(tx.Error)
+//	return nil, tx.Error
+//}
+//return countries, nil
+
+func (r *Repository) GetCountries(pagination *models.Pagination) ([]*models.Countries, error) {
 	var countries []*models.Countries
-
-	if limit == 0 {
-		limit = 10
-	}
-
-	query := db.Data.Table("countries")
-	//if filter!="" {
-	//	query = query.Where("name like ?","%"+filter+"%")
-	//}
-
-	tx := query.Limit(limit).Offset(offset).Find(&countries)
-	if tx.Error != nil {
-		log.Println(tx.Error)
-		return nil, tx.Error
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuider := db.Data.Table("countries").Limit(pagination.Limit).Offset(offset)
+	result := queryBuider.Model(&models.Countries{}).Find(&countries)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
 	}
 	return countries, nil
 }

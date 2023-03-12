@@ -15,16 +15,14 @@ func (r Repository) AddCurrency(currency *models.Currency) error {
 	return nil
 }
 
-func (r *Repository) GetCurrency(offset int, limit int) ([]*models.Currency, error) {
+func (r *Repository) GetCurrency(pagination *models.Pagination) ([]*models.Currency, error) {
 	var currency []*models.Currency
-	if limit == 0 {
-		limit = 10
-	}
-	tx := db.Data.Table("currencies").Limit(limit).Offset(offset).Find(&currency)
-
-	if tx.Error != nil {
-		log.Println(tx.Error)
-		return nil, tx.Error
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuider := db.Data.Table("currencies").Limit(pagination.Limit).Offset(offset)
+	result := queryBuider.Model(&models.Currency{}).Find(&currency)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
 	}
 	return currency, nil
 }

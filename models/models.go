@@ -1,5 +1,12 @@
 package models
 
+type Pagination struct {
+	Limit      int         `json:"limit,omitempty;query:limit"`
+	Page       int         `json:"page,omitempty;query:page"`
+	TotalPages int64       `json:"total_pages"`
+	Records    interface{} `json:"records"`
+}
+
 type DbData struct {
 	DSN string `yaml:"DSN"`
 }
@@ -54,38 +61,12 @@ type AccountAgent struct {
 	Type       string `gorm:"column:type"`
 }
 
-type CountriesWithPage struct {
-	Countries []*Countries
-	TotalPage int64
-}
-
-type LanguageWithPage struct {
-	Languages []*Languages
-	TotalPage int64
-}
-
-type SysMessageWithPage struct {
-	SysMessage []*SysMessage
-	TotalPage  int64
-}
-
-type CurrencyWithPage struct {
-	Currency  []*Currency
-	TotalPage int64
-}
-
-type TransfersWithPage struct {
-	Transfers []*Transfers
-	TotalPage int64
-}
-
-type AgentsWithPage struct {
-	Agents    []*Agents
-	TotalPage int64
-}
-type AccountWithPage struct {
-	Account   []*AccountAgent
-	TotalPage int64
+type UserInfo struct {
+	ID     int64  `gorm:"column:id;primary_key;autoIncrement"`
+	Name   string `gorm:"column:name"`
+	Icon   string `gorm:"column:icon"`
+	Active bool   `gorm:"column:active;"`
+	Sort   int    `gorm:"column:sort"`
 }
 
 // *bool - null bool

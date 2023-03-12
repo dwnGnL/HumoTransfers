@@ -15,18 +15,16 @@ func (r Repository) AddTransfer(transfer *models.Transfers) error {
 	return nil
 }
 
-func (r *Repository) GetTransfer(offset int, limit int) ([]*models.Transfers, error) {
-	var transfers []*models.Transfers
-	if limit == 0 {
-		limit = 10
+func (r *Repository) GetTransfer(pagination *models.Pagination) ([]*models.Transfers, error) {
+	var Transfer []*models.Transfers
+	offset := (pagination.Page - 1) * pagination.Limit
+	queryBuider := db.Data.Table("transfers").Limit(pagination.Limit).Offset(offset)
+	result := queryBuider.Model(&models.Transfers{}).Find(&Transfer)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
 	}
-	tx := db.Data.Table("transfers").Limit(limit).Offset(offset).Find(&transfers)
-
-	if tx.Error != nil {
-		log.Println(tx.Error)
-		return nil, tx.Error
-	}
-	return transfers, nil
+	return Transfer, nil
 }
 
 func (r Repository) UpdateTransfers(transfer *models.Transfers) error {

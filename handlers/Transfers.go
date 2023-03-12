@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 func (h *Handler) AddTransfer(ctx *gin.Context) {
@@ -28,30 +27,22 @@ func (h *Handler) AddTransfer(ctx *gin.Context) {
 }
 
 func (h *Handler) GetTransfer(ctx *gin.Context) {
-	queries := ctx.Request.URL.Query()
-	pageStr := queries.Get("page")
-	limitStr := queries.Get("limit")
-	page, _ := strconv.Atoi(pageStr)
-	limit, _ := strconv.Atoi(limitStr)
-
-	offset := (page - 1) * 10
-	app, err := h.Repository.GetTransfer(offset, limit)
+	pagination := GeneratePaginationFromRequest(ctx)
+	TransferLists, err := h.Repository.GetTransfer(&pagination)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	totalPage, err := h.Repository.TotalPageTransfer(int64(limit))
+	TotalPages, err := h.Repository.TotalPageTransfer(int64(pagination.Limit))
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	var Transfers models.TransfersWithPage
-	Transfers.Transfers = app
-	Transfers.TotalPage = totalPage
-
-	ctx.JSON(http.StatusOK, Transfers)
+	pagination.Records = TransferLists
+	pagination.TotalPages = TotalPages
+	ctx.JSON(http.StatusOK, pagination)
 }
 
 func (h Handler) UpdateTransfer(ctx *gin.Context) {
