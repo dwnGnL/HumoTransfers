@@ -55,9 +55,14 @@ func (h Handler) UpdateLanguage(ctx *gin.Context) {
 	if language.Name == "" && language.Icon == "" {
 		err := h.Repository.DeleteLanguage(language)
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
-			log.Println(err)
-			return
+			if err.Error() == "ERROR: update or delete on table \"languages\" violates foreign key constraint \"transfers_lang_id_fkey\" on table \"transfers\" (SQLSTATE 23503)" {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": " ERROR: update or delete on table 'languages' violates foreign key constraint 'transfers_lang_id_fkey' on table 'transfers' (SQLSTATE 23503)"})
+				return
+			} else {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+				log.Println(err)
+				return
+			}
 		}
 	} else {
 		err := h.Repository.UpdateLanguage(language)

@@ -57,10 +57,12 @@ func (h Handler) UpdateTransfer(ctx *gin.Context) {
 		transfer.LangId == 0 && transfer.Value == "" {
 		err := h.Repository.DeleteTransfers(transfer)
 		if err != nil {
+
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 			log.Println(err)
 			return
 		}
+
 	} else {
 		err := h.Repository.UpdateTransfers(transfer)
 		if err != nil {

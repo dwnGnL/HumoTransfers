@@ -31,14 +31,14 @@ func (r *Repository) GetUserInfo(pagination *models.Pagination) ([]*models.UserI
 func (r Repository) UpdateUserInfo(userInfo *models.UserInfo) error {
 
 	var UserInfos *models.UserInfo
-	query2 := db.Data.Where("id=?", userInfo.ID).Find(&UserInfos)
+	query2 := db.Data.Table("userinfo").Where("id=?", userInfo.ID).Find(&UserInfos)
 	if query2.Error != nil {
 		log.Println(query2.Error)
 		return query2.Error
 	}
 
 	log.Println(1, userInfo, 2, UserInfos)
-	tx := db.Data.Model(&models.UserInfo{}).Where("id = ?", userInfo.ID).Updates(models.UserInfo{Name: userInfo.Name, Icon: userInfo.Icon, Sort: userInfo.Sort})
+	tx := db.Data.Table("userinfo").Model(&models.UserInfo{}).Where("id = ?", userInfo.ID).Updates(models.UserInfo{Name: userInfo.Name, Icon: userInfo.Icon, Sort: userInfo.Sort})
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error

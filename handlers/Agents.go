@@ -56,9 +56,15 @@ func (h Handler) UpdateAgents(ctx *gin.Context) {
 	if agents.Name == "" && agents.LegalName == "" {
 		err := h.Repository.DeleteAgents(agents)
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
-			log.Println(err)
-			return
+			if err.Error() == "ERROR: update or delete on table \"agents\" violates foreign key constraint \"account_agents_agent_id_fkey\" on table \"account_agents\" (SQLSTATE 23503)" {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": " ERROR: update or delete on table 'agents' violates foreign key constraint 'account_agents_agent_id_fkey' on table 'account_agents' (SQLSTATE 23503)"})
+				return
+			} else {
+				//if errors.Is(err, gorm.ErrDryRunModeUnsupported)
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+				log.Println(err)
+				return
+			}
 		}
 	} else {
 		err := h.Repository.UpdateAgents(agents)
