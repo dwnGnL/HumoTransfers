@@ -34,8 +34,8 @@ func (r Repository) AddCountry(country *models.Countries) error {
 //}
 //return countries, nil
 
-func (r *Repository) GetCountries(pagination *models.Pagination) ([]*models.Countries, error) {
-	var countries []*models.Countries
+func (r *Repository) GetCountries(pagination *models.Pagination) ([]models.Countries, error) {
+	var countries []models.Countries
 	offset := (pagination.Page - 1) * pagination.Limit
 	queryBuider := db.Data.Table("countries").Limit(pagination.Limit).Offset(offset)
 	result := queryBuider.Model(&models.Countries{}).Find(&countries)
@@ -48,7 +48,7 @@ func (r *Repository) GetCountries(pagination *models.Pagination) ([]*models.Coun
 
 func (r Repository) UpdateCountries(country *models.Countries) error {
 
-	var countries *models.Countries
+	var countries models.Countries
 	query2 := db.Data.Where("id=?", country.ID).Find(&countries)
 	if query2.Error != nil {
 		log.Println(query2.Error)
@@ -56,7 +56,7 @@ func (r Repository) UpdateCountries(country *models.Countries) error {
 	}
 
 	log.Println(1, country, 2, countries)
-	tx := db.Data.Model(&models.Countries{}).Where("id = ?", country.ID).Updates(models.Countries{Name: country.Name, Icon: country.Icon, Active: country.Active})
+	tx := db.Data.Model(models.Countries{}).Where("id = ?", country.ID).Updates(models.Countries{Name: country.Name, Icon: country.Icon, Active: country.Active})
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -75,7 +75,7 @@ func (r Repository) DeleteCountries(country *models.Countries) error {
 }
 
 func (r Repository) CountryStatus(country *models.Countries) error {
-	tx := db.Data.Where("id", country.ID).Table("countries").Scan(&country)
+	tx := db.Data.Where("id = ?", country.ID).Table("countries").Scan(country)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -85,7 +85,7 @@ func (r Repository) CountryStatus(country *models.Countries) error {
 	} else {
 		country.Active = true
 	}
-	tx = db.Data.Where("id", country.ID).Table("countries").Update("active", country.Active)
+	tx = db.Data.Where("id = ?", country.ID).Table("countries").Update("active", country.Active)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error

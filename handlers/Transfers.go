@@ -54,7 +54,7 @@ func (h Handler) UpdateTransfer(ctx *gin.Context) {
 		return
 	}
 	if transfer.EntityId == 0 && transfer.Entity == "" &&
-		transfer.LangId == 0 && transfer.Value == "" {
+		transfer.LangId == 0 && transfer.KeyField == 0 && transfer.Value == "" {
 		err := h.Repository.DeleteTransfers(transfer)
 		if err != nil {
 

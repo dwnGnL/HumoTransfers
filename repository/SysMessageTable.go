@@ -15,8 +15,8 @@ func (r Repository) AddSysMessage(message *models.SysMessage) error {
 	return nil
 }
 
-func (r *Repository) GetSysMessage(pagination *models.Pagination) ([]*models.SysMessage, error) {
-	var SysMessage []*models.SysMessage
+func (r *Repository) GetSysMessage(pagination *models.Pagination) ([]models.SysMessage, error) {
+	var SysMessage []models.SysMessage
 	offset := (pagination.Page - 1) * pagination.Limit
 	queryBuider := db.Data.Table("sys_messages").Limit(pagination.Limit).Offset(offset)
 	result := queryBuider.Model(&models.SysMessage{}).Find(&SysMessage)
@@ -36,7 +36,7 @@ func (r Repository) UpdateSysMessage(message *models.SysMessage) error {
 		}
 	} else {
 
-		tx := db.Data.Model(&models.SysMessage{}).Where("id = ?", message.ID).Updates(models.SysMessage{Name: message.Name})
+		tx := db.Data.Model(models.SysMessage{}).Where("id = ?", message.ID).Updates(models.SysMessage{Name: message.Name})
 		if tx.Error != nil {
 			log.Println(tx.Error)
 			return tx.Error
@@ -56,7 +56,7 @@ func (r Repository) DeleteSysMessage(message *models.SysMessage) error {
 }
 
 func (r Repository) SysMessageStatus(message *models.SysMessage) error {
-	tx := db.Data.Where("id", message.ID).Table("sys_messages").Scan(&message)
+	tx := db.Data.Where("id = ?", message.ID).Table("sys_messages").Scan(message)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -66,7 +66,7 @@ func (r Repository) SysMessageStatus(message *models.SysMessage) error {
 	} else {
 		message.Active = true
 	}
-	tx = db.Data.Where("id", message.ID).Table("sys_messages").Update("active", message.Active)
+	tx = db.Data.Where("id = ?", message.ID).Table("sys_messages").Update("active", message.Active)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error

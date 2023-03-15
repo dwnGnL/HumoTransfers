@@ -15,8 +15,8 @@ func (r Repository) AddTransfer(transfer *models.Transfers) error {
 	return nil
 }
 
-func (r *Repository) GetTransfer(pagination *models.Pagination) ([]*models.Transfers, error) {
-	var Transfer []*models.Transfers
+func (r *Repository) GetTransfer(pagination *models.Pagination) ([]models.Transfers, error) {
+	var Transfer []models.Transfers
 	offset := (pagination.Page - 1) * pagination.Limit
 	queryBuider := db.Data.Table("transfers").Limit(pagination.Limit).Offset(offset)
 	result := queryBuider.Model(&models.Transfers{}).Find(&Transfer)
@@ -29,14 +29,14 @@ func (r *Repository) GetTransfer(pagination *models.Pagination) ([]*models.Trans
 
 func (r Repository) UpdateTransfers(transfer *models.Transfers) error {
 
-	var transfers *models.Transfers
+	var transfers models.Transfers
 	query := db.Data.Table("transfers").Where("id=?", transfer.ID).Find(&transfers)
 	if query.Error != nil {
 		log.Println(query.Error)
 		return query.Error
 	}
 
-	tx := db.Data.Table("transfers").Model(&models.Transfers{}).Where("id = ?", transfer.ID).Updates(models.Transfers{Entity: transfer.Entity, EntityId: transfer.EntityId, LangId: transfer.LangId, Value: transfer.Value})
+	tx := db.Data.Table("transfers").Model(models.Transfers{}).Where("id = ?", transfer.ID).Updates(models.Transfers{Entity: transfer.Entity, EntityId: transfer.EntityId, LangId: transfer.LangId, Value: transfer.Value})
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error

@@ -15,8 +15,8 @@ func (r Repository) AddAccount(account *models.AccountAgent) error {
 	return nil
 }
 
-func (r *Repository) GetAccountAgent(pagination *models.Pagination) ([]*models.AccountAgent, error) {
-	var AccAgents []*models.AccountAgent
+func (r *Repository) GetAccountAgent(pagination *models.Pagination) ([]models.AccountAgent, error) {
+	var AccAgents []models.AccountAgent
 	offset := (pagination.Page - 1) * pagination.Limit
 	queryBuider := db.Data.Table("account_agents").Limit(pagination.Limit).Offset(offset)
 	result := queryBuider.Model(&models.AccountAgent{}).Find(&AccAgents)
@@ -29,14 +29,14 @@ func (r *Repository) GetAccountAgent(pagination *models.Pagination) ([]*models.A
 
 func (r Repository) UpdateAccountAgent(AccAgent *models.AccountAgent) error {
 
-	var AccAgents *models.AccountAgent
+	var AccAgents models.AccountAgent
 	query := db.Data.Where("id=?", AccAgent.ID).Find(&AccAgents)
 	if query.Error != nil {
 		log.Println(query.Error)
 		return query.Error
 	}
 
-	tx := db.Data.Model(&models.AccountAgent{}).Where("id = ?", AccAgent.ID).Updates(models.AccountAgent{AgentId: AccAgent.AgentId, CurrencyId: AccAgent.CurrencyId, IsDefault: AccAgent.IsDefault, Type: AccAgent.Type})
+	tx := db.Data.Model(models.AccountAgent{}).Where("id = ?", AccAgent.ID).Updates(models.AccountAgent{AgentId: AccAgent.AgentId, CurrencyId: AccAgent.CurrencyId, IsDefault: AccAgent.IsDefault, Type: AccAgent.Type})
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -56,7 +56,7 @@ func (r Repository) DeleteAccountAgent(AccAgent *models.AccountAgent) error {
 }
 
 func (r Repository) UpdateAccountDefault(AccAgent *models.AccountAgent) error {
-	tx := db.Data.Where("id", AccAgent.ID).Table("account_agents").Scan(&AccAgent)
+	tx := db.Data.Where("id = ?", AccAgent.ID).Table("account_agents").Scan(AccAgent)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -66,7 +66,7 @@ func (r Repository) UpdateAccountDefault(AccAgent *models.AccountAgent) error {
 	} else {
 		AccAgent.IsDefault = true
 	}
-	tx = db.Data.Where("id", AccAgent.ID).Table("account_agents").Update("is_default", AccAgent.IsDefault)
+	tx = db.Data.Where("id = ?", AccAgent.ID).Table("account_agents").Update("is_default", AccAgent.IsDefault)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -75,7 +75,7 @@ func (r Repository) UpdateAccountDefault(AccAgent *models.AccountAgent) error {
 }
 
 func (r Repository) AccountAgentStatus(AccAgent *models.AccountAgent) error {
-	tx := db.Data.Where("id", AccAgent.ID).Table("account_agents").Scan(&AccAgent)
+	tx := db.Data.Where("id = ?", AccAgent.ID).Table("account_agents").Scan(AccAgent)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -85,7 +85,7 @@ func (r Repository) AccountAgentStatus(AccAgent *models.AccountAgent) error {
 	} else {
 		AccAgent.Active = true
 	}
-	tx = db.Data.Where("id", AccAgent.ID).Table("account_agents").Update("active", AccAgent.Active)
+	tx = db.Data.Where("id = ?", AccAgent.ID).Table("account_agents").Update("active", AccAgent.Active)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error

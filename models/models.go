@@ -42,6 +42,7 @@ type Transfers struct {
 	Entity   string `gorm:"column:entity"`
 	EntityId int64  `gorm:"column:entity_id"`
 	LangId   int64  `gorm:"column:lang_id;references:languages"`
+	KeyField int64  `gorm:"column:keyfield"`
 	Value    string `gorm:"column:value"`
 }
 

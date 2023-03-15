@@ -15,8 +15,8 @@ func (r Repository) AddCurrency(currency *models.Currency) error {
 	return nil
 }
 
-func (r *Repository) GetCurrency(pagination *models.Pagination) ([]*models.Currency, error) {
-	var currency []*models.Currency
+func (r *Repository) GetCurrency(pagination *models.Pagination) ([]models.Currency, error) {
+	var currency []models.Currency
 	offset := (pagination.Page - 1) * pagination.Limit
 	queryBuider := db.Data.Table("currencies").Limit(pagination.Limit).Offset(offset)
 	result := queryBuider.Model(&models.Currency{}).Find(&currency)
@@ -29,7 +29,7 @@ func (r *Repository) GetCurrency(pagination *models.Pagination) ([]*models.Curre
 
 func (r Repository) UpdateCurrency(currency *models.Currency) error {
 
-	var currencies *models.Languages
+	var currencies models.Languages
 	query := db.Data.Where("id=?", currency.ID).Find(&currencies)
 	if query.Error != nil {
 		log.Println(query.Error)
@@ -42,7 +42,7 @@ func (r Repository) UpdateCurrency(currency *models.Currency) error {
 		currency.Icon = currencies.Icon
 	}
 
-	tx := db.Data.Model(&models.Currency{}).Where("id = ?", currency.ID).Updates(models.Currency{Name: currency.Name, Icon: currency.Icon})
+	tx := db.Data.Model(models.Currency{}).Where("id = ?", currency.ID).Updates(models.Currency{Name: currency.Name, Icon: currency.Icon})
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error

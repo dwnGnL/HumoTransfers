@@ -15,8 +15,8 @@ func (r Repository) AddLanguage(language *models.Languages) error {
 	return nil
 }
 
-func (r *Repository) GetLanguages(pagination *models.Pagination) ([]*models.Languages, error) {
-	var Languages []*models.Languages
+func (r *Repository) GetLanguages(pagination *models.Pagination) ([]models.Languages, error) {
+	var Languages []models.Languages
 	offset := (pagination.Page - 1) * pagination.Limit
 	queryBuider := db.Data.Table("languages").Limit(pagination.Limit).Offset(offset)
 	result := queryBuider.Model(&models.Languages{}).Find(&Languages)
@@ -29,7 +29,7 @@ func (r *Repository) GetLanguages(pagination *models.Pagination) ([]*models.Lang
 
 func (r Repository) UpdateLanguage(language *models.Languages) error {
 
-	var languages *models.Languages
+	var languages models.Languages
 	query := db.Data.Where("id=?", language.ID).Find(&languages)
 	if query.Error != nil {
 		log.Println(query.Error)
@@ -42,7 +42,7 @@ func (r Repository) UpdateLanguage(language *models.Languages) error {
 		language.Icon = languages.Icon
 	}
 
-	tx := db.Data.Model(&models.Languages{}).Where("id = ?", language.ID).Updates(models.Languages{Name: language.Name, Icon: language.Icon})
+	tx := db.Data.Model(models.Languages{}).Where("id = ?", language.ID).Updates(models.Languages{Name: language.Name, Icon: language.Icon})
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -62,7 +62,7 @@ func (r Repository) DeleteLanguage(language *models.Languages) error {
 }
 
 func (r Repository) LanguageStatus(language *models.Languages) error {
-	tx := db.Data.Where("id", language.ID).Table("languages").Scan(&language)
+	tx := db.Data.Where("id = ?", language.ID).Table("languages").Scan(language)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
@@ -72,7 +72,7 @@ func (r Repository) LanguageStatus(language *models.Languages) error {
 	} else {
 		language.Active = true
 	}
-	tx = db.Data.Where("id", language.ID).Table("languages").Update("active", language.Active)
+	tx = db.Data.Where("id = ?", language.ID).Table("languages").Update("active", language.Active)
 	if tx.Error != nil {
 		log.Println(tx.Error)
 		return tx.Error
