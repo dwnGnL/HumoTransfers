@@ -54,7 +54,7 @@ func (h Handler) UpdateAccountAgent(ctx *gin.Context) {
 		return
 	}
 	if account.AgentId == 0 && account.CurrencyId == 0 &&
-		account.Type == "" {
+		account.Type == 0 {
 		err := h.Repository.DeleteAccountAgent(account)
 		if err != nil {
 			log.Println(err)

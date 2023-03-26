@@ -1,11 +1,5 @@
 package main
 
-// countries
-
-// todo: primary key, autoIncrement - for tables
-
-// todo при пагинации должно возвращаться также страница и количество строк
-
 import (
 	"Humo/db"
 	"Humo/handlers"
@@ -14,6 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 )
+
+// countries
+
+//  primary key, autoIncrement - for tables
+
+//  при пагинации должно возвращаться также страница и количество строк
 
 func main() {
 

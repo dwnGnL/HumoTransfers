@@ -29,12 +29,12 @@ func (r *Repository) GetAccountAgent(pagination *models.Pagination) ([]models.Ac
 
 func (r Repository) UpdateAccountAgent(AccAgent *models.AccountAgent) error {
 
-	var AccAgents models.AccountAgent
-	query := db.Data.Where("id=?", AccAgent.ID).Find(&AccAgents)
-	if query.Error != nil {
-		log.Println(query.Error)
-		return query.Error
-	}
+	//var AccAgents models.AccountAgent
+	//query := db.Data.Where("id=?", AccAgent.ID).Find(&AccAgents)
+	//if query.Error != nil {
+	//	log.Println(query.Error)
+	//	return query.Error
+	//}
 
 	tx := db.Data.Model(models.AccountAgent{}).Where("id = ?", AccAgent.ID).Updates(models.AccountAgent{AgentId: AccAgent.AgentId, CurrencyId: AccAgent.CurrencyId, IsDefault: AccAgent.IsDefault, Type: AccAgent.Type})
 	if tx.Error != nil {

@@ -28,6 +28,11 @@ func (r *Routs) Init() {
 	r.Engine.POST("/add_agents", r.Handlers.AddAgent)
 	r.Engine.POST("/add_acc_agents", r.Handlers.AddAccount)
 	r.Engine.POST("/add_user", r.Handlers.AddUserInfo)
+	r.Engine.POST("/add_vendor", r.Handlers.AddVendor)
+	r.Engine.POST("/add_service", r.Handlers.AddServices)
+	r.Engine.POST("/add_serv_country", r.Handlers.AddServCountry)
+	r.Engine.POST("/add_serv_rules", r.Handlers.AddServiceRules)
+	r.Engine.POST("/add_payment_type", r.Handlers.AddPaymentType)
 
 	r.Engine.GET("/get_country", r.Handlers.GetCountry)
 	r.Engine.GET("/get_language", r.Handlers.GetLanguage)
@@ -37,6 +42,11 @@ func (r *Routs) Init() {
 	r.Engine.GET("/get_agents", r.Handlers.GetAgent)
 	r.Engine.GET("/get_acc_agents", r.Handlers.GetAccountAgent)
 	r.Engine.GET("/get_user", r.Handlers.GetUserInfo)
+	r.Engine.GET("/get_vendor", r.Handlers.GetVendor)
+	r.Engine.GET("/get_services", r.Handlers.GetServices)
+	r.Engine.GET("/get_serv_country", r.Handlers.GetServCountry)
+	r.Engine.GET("/get_serv_rules", r.Handlers.GetServiceRules)
+	r.Engine.GET("/get_payment_type", r.Handlers.GetPaymentType)
 
 	r.Engine.PUT("/update_countries", r.Handlers.UpdateCountries)
 	r.Engine.PUT("/update_language", r.Handlers.UpdateLanguage)
@@ -47,6 +57,11 @@ func (r *Routs) Init() {
 	r.Engine.PUT("/update_account", r.Handlers.UpdateAccountAgent)
 	r.Engine.PUT("/update_account_def", r.Handlers.UpdateAccountDefault)
 	r.Engine.PUT("/update_user", r.Handlers.UpdateUserInfo)
+	r.Engine.PUT("/update_vendor", r.Handlers.UpdateVendor)
+	r.Engine.PUT("/update_service", r.Handlers.UpdateService)
+	r.Engine.PUT("/delete_serv_country", r.Handlers.DeleteServCountry)
+	r.Engine.PUT("/update_serv_rules", r.Handlers.UpdateServiceRules)
+	r.Engine.PUT("/update_payment_type", r.Handlers.UpdatePaymentType)
 
 	r.Engine.PATCH("/status_countries", r.Handlers.CountryStatus)
 	r.Engine.PATCH("/status_language", r.Handlers.LanguageStatus)
@@ -54,6 +69,11 @@ func (r *Routs) Init() {
 	r.Engine.PATCH("/status_agent", r.Handlers.AgentStatus)
 	r.Engine.PATCH("/status_account", r.Handlers.AccountAgentStatus)
 	r.Engine.PATCH("/status_user", r.Handlers.UserInfoStatus)
+	r.Engine.PATCH("/status_vendor", r.Handlers.VendorStatus)
+	r.Engine.PATCH("/status_service", r.Handlers.ServiceStatus)
+	r.Engine.PATCH("/status_serv_country", r.Handlers.ServCountryStatus)
+
+	r.Engine.POST("/upload", r.Handlers.UploadImage)
 }
 
 //http://localhost:8080/add_language

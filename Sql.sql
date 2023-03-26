@@ -7,6 +7,7 @@ create table countries
     primary key (id)
 );
 
+
 create table languages(
     id     bigserial,
     name   text not null,
@@ -57,10 +58,11 @@ create table account_agents
     curr_id  bigint not null,
     active   boolean default true,
     is_default   boolean default true,
-    type     text   not null,
+    type     bigint not null,
     primary key (id),
     foreign key (agent_id) references agents(id),
-    foreign key (curr_id) references currencies(id)
+    foreign key (curr_id) references currencies(id),
+    foreign key (type) references Payment_type(id)
 );
 
 create table userinfo (
@@ -69,7 +71,59 @@ create table userinfo (
     icon text,
     active bool default true,
     sort int
-)
+);
+
+create table vendor (
+  id bigserial primary key,
+  name text,
+  active bool
+);
+
+create table services (
+    id bigserial primary key,
+    vendor_id bigint references vendor,
+    name text,
+    active bool,
+    type text
+);
+
+create table services_country(
+    service_id bigint references services,
+    country_id bigint references countries,
+    active bool
+);
+
+create table services_rules(
+    id bigserial primary key,
+    name text,
+    type text
+);
+
+create table Payment_type(
+    id bigserial primary key,
+    name text
+);
+
 
 --
--- //todo keyfield Transfer
+
+create table registrator(
+                            id bigserial,
+                            request text,
+                            name text,
+                            icon text,
+                            active bool,
+                            entity text,
+                            entity_id int,
+                            lang_id int,
+                            keyfield int,
+                            value text,
+                            legal_name text,
+                            agent_id bigint not null,
+                            curr_id  bigint not null,
+                            is_default   boolean default true,
+                            type     text   not null,
+                            sort int,
+                            status text
+);
+
