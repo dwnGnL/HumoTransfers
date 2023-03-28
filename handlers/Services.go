@@ -28,7 +28,7 @@ func (h *Handler) AddServices(ctx *gin.Context) {
 func (h *Handler) GetServices(ctx *gin.Context) {
 	pagination := GeneratePaginationFromRequest(ctx)
 
-	ServicesList, err := h.Repository.GetAccountAgent(&pagination)
+	ServicesList, err := h.Repository.GetService(&pagination)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
